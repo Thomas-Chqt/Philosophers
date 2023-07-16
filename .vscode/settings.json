@@ -1,0 +1,13 @@
+{
+	"C_Cpp.default.includePath": [
+		"includes"
+	],
+	"files.exclude": {
+		"philo": true,
+		"philo_debug": true
+	},
+	"files.associations": {
+		"*.h": "c",
+		"bitset": "c"
+	}
+}

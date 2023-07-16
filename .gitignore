@@ -1,0 +1,4 @@
+*.a
+*.o
+philo
+philo_debug

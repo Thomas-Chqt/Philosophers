@@ -1,0 +1,134 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build Release",
+			"type": "shell",
+			"group": "build",
+			"command": "make",
+			"args": [
+				"all"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": "$gcc",
+			"presentation": {
+				"reveal": "silent",
+				"revealProblems": "onProblem",
+				"close": true
+			}
+		},
+		{
+			"label": "Build Debug",
+			"type": "shell",
+			"group": "build",
+			"command": "make",
+			"args": [
+				"debug"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": "$gcc",
+			"presentation": {
+				"reveal": "silent",
+				"revealProblems": "onProblem",
+				"close": true
+			}
+		},
+		{
+			"label": "Clean",
+			"type": "shell",
+			"command": "make",
+			"args": [
+				"clean",
+				"cleandebug",
+				"cleanbuild"
+			],
+			"presentation": {
+				"reveal": "silent",
+				"close": true
+			}
+		},
+		{
+			"label": "FClean",
+			"type": "shell",
+			"command": "make",
+			"args": [
+				"fclean",
+				"fcleandebug",
+				"cleanbuild"
+			],
+			"presentation": {
+				"reveal": "silent",
+				"close": true
+			},
+			"problemMatcher": []
+		},
+		{
+			"label": "Norminette",
+			"type": "shell",
+			"command": "make",
+			"args": [
+				"norm"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				{
+					"owner": "Norminette",
+					"fileLocation": [
+						"autoDetect",
+						"${workspaceFolder}"
+					],
+					"pattern": [
+						{
+							"regexp": "^(.*):\\s+(.*)$",
+							"file": 1
+						},
+						{
+							"regexp": "^(Notice|Error):\\s+(\\S+)\\s+\\(line:\\s+(\\d+),\\s+col:\\s+(\\d+)\\):\\s+(.*)$",
+							"loop": true,
+							"severity": 1,
+							"code": 2,
+							"line": 3,
+							"column": 4,
+							"message": 5
+						}
+					]
+				},
+				{
+					"owner": "Norminette",
+					"fileLocation": [
+						"autoDetect",
+						"${workspaceFolder}"
+					],
+					"pattern": [
+						{
+							"regexp": "^(.*):\\s+(.*)$",
+							"file": 1
+						},
+						{
+							"regexp": "^\\s+(Error):\\s+(.*)\\s+\\((\\d+),\\s+(\\d+)\\).*\\[(.*)\\]$",
+							"loop": true,
+							"severity": 1,
+							"message": 2,
+							"line": 3,
+							"column": 4,
+							"code": 5
+						}
+					]
+				}
+			],
+			"presentation": {
+				"reveal": "silent",
+				"revealProblems": "onProblem",
+				"close": true
+			}
+		}
+	]
+}
