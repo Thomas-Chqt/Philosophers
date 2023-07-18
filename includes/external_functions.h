@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 21:55:00 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/15 01:51:11 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/17 21:59:01 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 # define EXTERNAL_FUNCTIONS_H
 
 # define ULONG_MAX 18446744073709551615UL
-# define NULL 0
+# define __PTHREAD_MUTEX_SIZE__ 56
+# define NUL ((void *)0)
 
 typedef unsigned long						t_size;
 typedef long								t_ssize;
@@ -23,13 +24,18 @@ typedef long								t_time;
 typedef int									t_suseconds;
 typedef struct _opaque_pthread_t			*t_pthread;
 typedef struct _opaque_pthread_attr_t		t_pthread_attr;
-typedef struct _opaque_pthread_mutex_t		*t_pthread_mutex;
+typedef struct s_opaque_pthread_mutex		t_pthread_mutex;
 typedef struct _opaque_pthread_mutexattr_t	t_pthread_mutexattr;
 
 struct s_timeval
 {
 	t_time		tv_sec;
 	t_suseconds	tv_usec;
+};
+
+struct s_opaque_pthread_mutex {
+	long	__sig;
+	char	__opaque[__PTHREAD_MUTEX_SIZE__];
 };
 
 void	*memset(void *b, int c, t_size len);

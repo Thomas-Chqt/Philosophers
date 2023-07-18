@@ -6,7 +6,7 @@
 #    By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/14 15:55:42 by tchoquet          #+#    #+#              #
-#    Updated: 2023/07/14 17:41:36 by tchoquet         ###   ########.fr        #
+#    Updated: 2023/07/16 16:53:45 by tchoquet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,9 +19,9 @@ SRC			= ${wildcard ${SRCS_DIR}/*.c}
 OBJ			= ${patsubst ${SRCS_DIR}%, ${BUILD_DIR}%, ${SRC:.c=.o}}
 OBJ_DEBUG	= ${patsubst ${SRCS_DIR}%, ${BUILD_DIR}%, ${SRC:.c=_debug.o}}
 
-CC						= gcc
-CFLAGS					= -Wall -Wextra -Werror
-alldebug: CFLAGS		= -g -D MEMCHECK
+CC				= gcc
+CFLAGS			= -Wall -Wextra -Werror
+debug: CFLAGS	= -g -D MEMCHECK
 
 NAME		= ${ROOT}/philo
 NAME_DEBUG	= ${ROOT}/philo_debug

@@ -5,26 +5,28 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/15 01:27:39 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/16 16:32:04 by tchoquet         ###   ########.fr       */
+/*   Created: 2023/07/16 20:21:59 by tchoquet          #+#    #+#             */
+/*   Updated: 2023/07/17 14:05:14 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-long	atoi_long(const char *str)
+t_timestamp	get_time(void)
 {
-	t_uint64		nbr;
-	unsigned int	i;
+	struct s_timeval	timeval;
 
-	nbr = 0;
-	i = 0;
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		if ((nbr > ULONG_MAX / 10) || (nbr == ULONG_MAX / 10 && (t_uint64)(str[i] - '0') > ULONG_MAX % 10))
-			return (0);
-		nbr = (nbr * 10) + (str[i] - '0');
-		i++;
-	}
-	return (nbr);
+	gettimeofday(&timeval, NUL);
+	return ((t_timestamp){.sec = timeval.tv_sec, .usec = timeval.tv_usec});
+}
+
+t_uint64	ms_since(t_timestamp timestamp)
+{
+	t_timestamp	current_time;
+	t_timestamp	delta_time;
+
+	current_time = get_time();
+	delta_time.sec = current_time.sec - timestamp.sec;
+	delta_time.usec = current_time.usec - timestamp.usec;
+	return ((delta_time.sec * 1000) + (delta_time.usec / 1000));
 }

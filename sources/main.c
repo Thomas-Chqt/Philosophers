@@ -6,42 +6,42 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 15:41:57 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/16 16:30:08 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/18 13:43:31 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
 int	main(int argc, char const *argv[])
-{		
-	t_uint64		fophi_count;
-	t_fork			*forks;
-	t_philosopher	*philosophers;
+{
+	t_settings		settings = {.nbr_philosophers = 10, .time_die = 5000, .time_eat = 1000, .time_sleep = 500};
+	t_pthread_mutex	*forks;
+	t_philo			*philos;
 	t_uint64		i;
 
-	if (check_args(argc, argv) != 0)
-		return (printf("Arguments Error"));
-	fophi_count = atoi_long(argv[1]);
-	forks = malloc(sizeof(t_fork) * fophi_count);
-	if (forks == NULL)
-		return (printf("Malloc Error"));
-	philosophers = malloc(sizeof(t_philosopher) * fophi_count);
-	if (philosophers == NULL)
+	settings.start_time = get_time();
+	forks = malloc(sizeof(t_pthread_mutex) * settings.nbr_philosophers);
+	philos = malloc(sizeof(t_philo) * settings.nbr_philosophers);
+	if (forks == NUL || philos == NUL)
 	{
 		free(forks);
-		return (printf("Malloc Error"));
+		free(philos);
+		return (printf("Malloc Error\n"));
 	}
 	i = 0;
-	while (i < fophi_count)
-		forks[i++] = create_fork();
-	create_philosopher(philosophers, forks + (fophi_count - 1), forks);
+	while (i < settings.nbr_philosophers)
+		pthread_mutex_init(forks + (i++), NUL);
+	create_philo(philos, settings, forks + (settings.nbr_philosophers - 1), forks);
 	i = 0;
-	while (i < fophi_count)
+	usleep(1000);
+	while (++i < settings.nbr_philosophers)
 	{
-		create_philosopher(philosophers + i, forks + (i - 1), forks + i);
-		i++;
+		create_philo(philos + i, settings, forks + (i - 1), forks + i);
+		usleep(1000);
 	}
-
+	while (1)
+	{
+		/* code */
+	}
 	return (0);
 }
-

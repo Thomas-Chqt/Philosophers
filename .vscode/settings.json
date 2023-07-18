@@ -8,6 +8,7 @@
 	},
 	"files.associations": {
 		"*.h": "c",
-		"bitset": "c"
-	}
+		"bitset": "c",
+		"__locale": "c"
+	},
 }

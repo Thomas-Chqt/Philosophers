@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 15:42:22 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/16 16:30:15 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/17 22:00:09 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,27 +15,41 @@
 
 # include "external_functions.h"
 
-typedef	unsigned long	t_uint64;
+typedef unsigned long	t_uint64;
 
-typedef struct s_fork
+typedef struct s_timestamp
 {
-	t_pthread_mutex	mutex;
+	t_uint64	sec;
+	t_uint64	usec;
 
-}	t_fork;
+}	t_timestamp;
 
-typedef struct s_philosopher
+typedef struct settings
 {
-	t_pthread	thread;
-	t_fork		*fork1;
-	t_fork		*fork2;
-	t_uint64	last_eat_time;
+	t_uint64	nbr_philosophers;
+	t_uint64	time_die;
+	t_uint64	time_eat;
+	t_uint64	time_sleep;
+	t_uint64	nbr_eat;
+	t_timestamp	start_time;
 
-}	t_philosopher;
+}	t_settings;
 
-int		check_args(int argc, char const *argv[]);
-t_fork	create_fork(void);
-void	create_philosopher(t_philosopher *philosopher, t_fork *fork1, t_fork *fork2);
+typedef struct s_philo
+{
+	t_pthread		thread;
+	t_settings		settings;
+	t_uint64		id;
+	t_pthread_mutex	*fork1;
+	t_pthread_mutex	*fork2;
+	t_timestamp		last_eat;
 
-long	atoi_long(const char *str);
+}	t_philo;
+
+t_timestamp	get_time(void);
+t_uint64	ms_since(t_timestamp timestamp);
+void		create_philo(t_philo *philo, t_settings settings,
+				t_pthread_mutex *fork1, t_pthread_mutex *fork2);
+;
 
 #endif // PHILOSOPHERS_H

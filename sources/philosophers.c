@@ -5,55 +5,45 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/07/14 15:42:14 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/16 16:30:29 by tchoquet         ###   ########.fr       */
+/*   Created: 2023/07/16 20:25:42 by tchoquet          #+#    #+#             */
+/*   Updated: 2023/07/18 13:38:53 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-void	*philosopher_loop(void *data);
+static void	*philo_loop(void *data);
 
-int	check_args(int argc, char const *argv[])
+void	create_philo(t_philo *philo, t_settings settings,
+			t_pthread_mutex *fork1, t_pthread_mutex *fork2)
 {
-	if (argc < 5 || argc > 6)
-		return (-1);
-	if (atoi_long(argv[1]) == 0 || atoi_long(argv[2]) == 0)
-		return (-1);
-	if (atoi_long(argv[3]) == 0 || atoi_long(argv[4]) == 0)
-		return (-1);
-	if (argc == 6 && atoi_long(argv[5]) == 0)
-		return (-1);	
-	return (0);
+	static t_uint64	id = 1;
+
+	philo->settings = settings;
+	philo->id = id++;
+	philo->fork1 = fork1;
+	philo->fork2 = fork2;
+	philo->last_eat = settings.start_time;
+	pthread_create(&philo->thread, NUL, &philo_loop, philo);
 }
 
-t_fork	create_fork(void)
+static void	*philo_loop(void *data)
 {
-	t_pthread_mutex	mutex;
+	t_philo	*philo;
 
-	pthread_mutex_init(&mutex, NULL);
-	return ((t_fork){mutex});
-}
-
-void	create_philosopher(t_philosopher *philosopher, t_fork *fork1, t_fork *fork2)
-{
-	philosopher->fork1 = fork1;
-	philosopher->fork2 = fork2;
-	philosopher->last_eat_time = 0;
-	pthread_create(&philosopher->thread, NULL, &philosopher_loop, philosopher);
-}
-
-void	*philosopher_loop(void *data)
-{
-	t_philosopher	*philosopher;
-
-	philosopher = (t_philosopher *)data;
+	philo = (t_philo *)data;
 	while (1)
 	{
-		pthread_mutex_lock(&philosopher->fork1->mutex);
-		printf("Philo took fork");
-		pthread_mutex_lock(&philosopher->fork1->mutex);
-		printf("Philo took fork");
+		pthread_mutex_lock(philo->fork1);
+		printf("%lu %d has taken a fork\n", ms_since(philo->settings.start_time),  philo->id);
+		pthread_mutex_lock(philo->fork2);
+		printf("%lu %d has taken a fork\n", ms_since(philo->settings.start_time),  philo->id);
+		printf("%lu %d is eating\n", ms_since(philo->settings.start_time),  philo->id);
+		usleep(philo->settings.time_eat * 1000);
+		pthread_mutex_unlock(philo->fork1);
+		pthread_mutex_unlock(philo->fork2);
+		printf("%lu %d is sleeping\n", ms_since(philo->settings.start_time),  philo->id);
+		usleep(philo->settings.time_sleep * 1000);
+		printf("%lu %d is thinking\n", ms_since(philo->settings.start_time),  philo->id);
 	}
-	
 }
