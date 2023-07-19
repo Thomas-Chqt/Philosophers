@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 15:41:57 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/18 13:43:31 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/19 01:31:39 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 int	main(int argc, char const *argv[])
 {
 	t_settings		settings = {.nbr_philosophers = 10, .time_die = 5000, .time_eat = 1000, .time_sleep = 500};
+	t_pthread		time_thread;
 	t_pthread_mutex	*forks;
 	t_philo			*philos;
 	t_uint64		i;
@@ -39,9 +40,6 @@ int	main(int argc, char const *argv[])
 		create_philo(philos + i, settings, forks + (i - 1), forks + i);
 		usleep(1000);
 	}
-	while (1)
-	{
-		/* code */
-	}
+	start_simulation(&time_thread, philos, settings);
 	return (0);
 }

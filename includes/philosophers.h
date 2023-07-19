@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 15:42:22 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/17 22:00:09 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/19 01:17:01 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct s_philo
 	t_pthread_mutex	*fork1;
 	t_pthread_mutex	*fork2;
 	t_timestamp		last_eat;
+	t_uint64		eat_count;
 
 }	t_philo;
 
@@ -50,6 +51,7 @@ t_timestamp	get_time(void);
 t_uint64	ms_since(t_timestamp timestamp);
 void		create_philo(t_philo *philo, t_settings settings,
 				t_pthread_mutex *fork1, t_pthread_mutex *fork2);
-;
+void		start_simulation(t_pthread *time_thread, t_philo *philos, t_settings settings);
+
 
 #endif // PHILOSOPHERS_H
