@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 15:42:22 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/19 01:17:01 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/19 16:08:25 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ typedef struct s_timestamp
 
 typedef struct settings
 {
-	t_uint64	nbr_philosophers;
+	t_uint64	nbr_philo;
 	t_uint64	time_die;
 	t_uint64	time_eat;
 	t_uint64	time_sleep;
@@ -47,11 +47,13 @@ typedef struct s_philo
 
 }	t_philo;
 
-t_timestamp	get_time(void);
-t_uint64	ms_since(t_timestamp timestamp);
+int			setup(int argc, char const *argv[], t_settings *settings);
 void		create_philo(t_philo *philo, t_settings settings,
 				t_pthread_mutex *fork1, t_pthread_mutex *fork2);
-void		start_simulation(t_pthread *time_thread, t_philo *philos, t_settings settings);
+void		start_simulation(t_pthread *time_thread, t_philo *philos,
+				t_settings settings);
 
-
+t_timestamp	get_time(void);
+t_uint64	ms_since(t_timestamp timestamp);
+int			atoi_fill(char const *str, t_uint64 *nbr);
 #endif // PHILOSOPHERS_H

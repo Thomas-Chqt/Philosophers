@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/16 20:25:42 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/19 01:38:07 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/19 16:27:34 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,25 @@
 
 static void	*philo_loop(void *data);
 static void	*time_loop(void *data);
+
+int	setup(int argc, char const *argv[], t_settings *settings)
+{
+	if (argc < 5 || argc > 6)
+		return (-1);
+	if (atoi_fill(argv[1], &settings->nbr_philo) != 0)
+		return (-1);
+	if (atoi_fill(argv[2], &settings->time_die) != 0)
+		return (-1);
+	if (atoi_fill(argv[3], &settings->time_eat) != 0)
+		return (-1);
+	if (atoi_fill(argv[4], &settings->time_sleep) != 0)
+		return (-1);
+	settings->nbr_eat = 0;
+	if (argc == 6 && atoi_fill(argv[5], &settings->nbr_eat) != 0)
+		return (-1);
+	settings->start_time = get_time();
+	return (0);
+}
 
 void	create_philo(t_philo *philo, t_settings settings,
 			t_pthread_mutex *fork1, t_pthread_mutex *fork2)
@@ -27,9 +46,11 @@ void	create_philo(t_philo *philo, t_settings settings,
 	philo->last_eat = settings.start_time;
 	philo->eat_count = 0;
 	pthread_create(&philo->thread, NUL, &philo_loop, philo);
+	usleep(100);
 }
 
-void	start_simulation(t_pthread *time_thread, t_philo *philos, t_settings settings)
+void	start_simulation(t_pthread *time_thread, t_philo *philos,
+			t_settings settings)
 {
 	void	*loop_datas[2];
 
@@ -47,18 +68,18 @@ static void	*philo_loop(void *data)
 	while (1)
 	{
 		pthread_mutex_lock(philo->fork1);
-		printf("%lu %d has taken a fork\n", ms_since(philo->settings.start_time),  philo->id);
+		printf("%lu %lu has taken a fork\n", ms_since(philo->settings.start_time),  philo->id);
 		pthread_mutex_lock(philo->fork2);
-		printf("%lu %d has taken a fork\n", ms_since(philo->settings.start_time),  philo->id);
-		printf("%lu %d is eating\n", ms_since(philo->settings.start_time),  philo->id);
+		printf("%lu %lu has taken a fork\n", ms_since(philo->settings.start_time),  philo->id);
+		printf("%lu %lu is eating\n", ms_since(philo->settings.start_time),  philo->id);
 		philo->last_eat = get_time();
 		usleep(philo->settings.time_eat * 1000);
 		philo->eat_count += 1;
 		pthread_mutex_unlock(philo->fork1);
 		pthread_mutex_unlock(philo->fork2);
-		printf("%lu %d is sleeping\n", ms_since(philo->settings.start_time),  philo->id);
+		printf("%lu %lu is sleeping\n", ms_since(philo->settings.start_time),  philo->id);
 		usleep(philo->settings.time_sleep * 1000);
-		printf("%lu %d is thinking\n", ms_since(philo->settings.start_time),  philo->id);
+		printf("%lu %lu is thinking\n", ms_since(philo->settings.start_time),  philo->id);
 	}
 }
 
@@ -73,16 +94,19 @@ static void	*time_loop(void *data)
 	while (1)
 	{
 		i = 0;
-		while (i < settings.nbr_philosophers)
+		while (i < settings.nbr_philo)
 		{
 			if (ms_since(philos[i].last_eat) >= settings.time_die)
 			{
-				printf("%lu %d died\n", ms_since(settings.start_time),  philos[i].id);
-				return NUL;
+				printf("%lu %lu died\n", ms_since(settings.start_time), philos[i].id);
+				return (NUL);
 			}
-			if (settings.nbr_eat > 0 && philos[i].eat_count >= settings.nbr_eat)
-				return NUL;
 			i++;
 		}
+		i = 0;
+		while ((i < settings.nbr_philo || settings.nbr_eat > 0) && (philos[i].eat_count >= settings.nbr_eat))
+			i++;
+		if (i == settings.nbr_philo)
+			return (NUL);
 	}
 }

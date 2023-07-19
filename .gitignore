@@ -2,3 +2,4 @@
 *.o
 philo
 philo_debug
+.start.sh
