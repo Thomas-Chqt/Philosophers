@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 15:42:22 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/19 16:08:25 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/19 21:23:17 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ typedef struct settings
 	t_uint64	time_eat;
 	t_uint64	time_sleep;
 	t_uint64	nbr_eat;
-	t_timestamp	start_time;
+	t_timestamp	srt_time;
 
 }	t_settings;
 
@@ -56,4 +56,5 @@ void		start_simulation(t_pthread *time_thread, t_philo *philos,
 t_timestamp	get_time(void);
 t_uint64	ms_since(t_timestamp timestamp);
 int			atoi_fill(char const *str, t_uint64 *nbr);
+
 #endif // PHILOSOPHERS_H

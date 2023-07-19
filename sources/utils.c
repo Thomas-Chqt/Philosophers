@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/16 20:21:59 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/19 16:35:55 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/19 21:24:48 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,8 @@ int	atoi_fill(char const *str, t_uint64 *nbr)
 		if (str[i] < '0' || str[i] > '9')
 			return (-1);
 		if ((*nbr > ULONG_MAX / 10)
-			|| (*nbr == ULONG_MAX / 10 && (t_uint64)(str[i] - '0') > ULONG_MAX % 10))
+			|| (*nbr == ULONG_MAX / 10
+				&& (t_uint64)(str[i] - '0') > ULONG_MAX % 10))
 		{
 			return (-1);
 		}
