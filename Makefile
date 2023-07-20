@@ -6,7 +6,7 @@
 #    By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/14 15:55:42 by tchoquet          #+#    #+#              #
-#    Updated: 2023/07/16 16:53:45 by tchoquet         ###   ########.fr        #
+#    Updated: 2023/07/20 12:26:47 by tchoquet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,7 @@ all: ${NAME}
 
 ${NAME}: ${OBJ}
 	@${CC} -o $@ $^ ${EXTERNAL_LIBS}
-	@echo "Executable created at $@."
+	@echo "Executable created at: $@"
 
 clean:
 	@rm -rf ${OBJ}
@@ -55,7 +55,7 @@ debug: ${NAME_DEBUG}
 
 ${NAME_DEBUG}: ${OBJ_DEBUG}
 	@${CC} -o $@ $^ ${EXTERNAL_LIBS}
-	@echo "Executable created at $@."
+	@echo "Executable created at: $@"
 
 cleandebug:
 	@rm -rf ${OBJ_DEBUG}

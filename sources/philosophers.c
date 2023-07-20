@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/16 20:25:42 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/19 21:24:33 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/20 12:25:11 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ static void	*philo_loop(void *data)
 		printf("%lu %lu is thinking\n", ms_since(philo->settings.srt_time),
 			philo->id);
 	}
+	return (NUL);
 }
 
 static void	*time_loop(void *data)
@@ -115,4 +116,5 @@ static void	*time_loop(void *data)
 		if (i == set.nbr_philo)
 			return (NUL);
 	}
+	return (NUL);
 }
