@@ -6,7 +6,7 @@
 #    By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/14 15:55:42 by tchoquet          #+#    #+#              #
-#    Updated: 2023/07/20 12:26:47 by tchoquet         ###   ########.fr        #
+#    Updated: 2023/07/20 16:52:58 by tchoquet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,8 @@ BUILD_DIR		= ${ROOT}/.build
 SRC			= ${wildcard ${SRCS_DIR}/*.c}
 OBJ			= ${patsubst ${SRCS_DIR}%, ${BUILD_DIR}%, ${SRC:.c=.o}}
 OBJ_DEBUG	= ${patsubst ${SRCS_DIR}%, ${BUILD_DIR}%, ${SRC:.c=_debug.o}}
+
+EXTERNAL_LIBS = -l ft
 
 CC				= gcc
 CFLAGS			= -Wall -Wextra -Werror
@@ -35,7 +37,7 @@ vpath %.c ${ROOT} ${SRCS_DIR}
 all: ${NAME}
 
 ${NAME}: ${OBJ}
-	@${CC} -o $@ $^ ${EXTERNAL_LIBS}
+	@${CC} -o $@ $^
 	@echo "Executable created at: $@"
 
 clean:

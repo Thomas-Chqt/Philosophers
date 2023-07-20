@@ -6,45 +6,53 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 15:41:57 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/19 16:32:39 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/20 17:16:11 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	free_return(void *ptr1, void *ptr2, char const *msg);
+#ifdef MEMCHECK
+
+# include <Libft.h>
+# include <unistd.h>
+# include <stdlib.h>
+
+__attribute__((destructor))
+static void	destructor(void)
+{
+	char	*pid;
+	char	*cmd;
+
+	pid = ft_itoa(getpid());
+	cmd = ft_strjoin("leaks -q ", pid);
+	ft_printf("\n \n");
+	system((const char *)cmd);
+	free(pid);
+	free(cmd);
+}
+
+#endif // MEMCHECK
 
 int	main(int argc, char const *argv[])
 {
-	t_settings		settings;
-	t_pthread		time_thread;
-	t_pthread_mutex	*forks;
-	t_philo			*philos;
-	t_uint64		i;
+	t_philosopher	*philosophers;
 
-	if (setup(argc, argv, &settings) != 0)
-		return (free_return(NUL, NUL, "Arg error\n"));
-	forks = malloc(sizeof(t_pthread_mutex) * settings.nbr_philo);
-	philos = malloc(sizeof(t_philo) * settings.nbr_philo);
-	if (forks == NUL || philos == NUL)
-		return (free_return(forks, philos, "Malloc error\n"));
-	i = 0;
-	while (i < settings.nbr_philo)
-		pthread_mutex_init(forks + (i++), NUL);
-	create_philo(philos, settings, forks + (settings.nbr_philo - 1), forks);
-	i = 0;
-	while (++i < settings.nbr_philo)
-		create_philo(philos + i, settings, forks + (i - 1), forks + i);
-	start_simulation(&time_thread, philos, settings);
-	free(philos);
-	free(forks);
+	if (init_settings(argc, argv) != 0)
+	{
+		printf("Arguments Error\n");
+		return (1);
+	}
+	philosophers = create_philos();
+	if (philosophers == NUL || run_simulation(philosophers) != 0)
+		printf("Unkown Error\n");
+	if (philosophers != NUL)
+	{
+		delete_philos(philosophers, get_nbr_philo());
+		return (3);
+	}
+	else
+		return (2);
+	delete_philos(philosophers, get_nbr_philo());
 	return (0);
-}
-
-int	free_return(void *ptr1, void *ptr2, char const *msg)
-{
-	free(ptr1);
-	free(ptr2);
-	printf("%s", msg);
-	return (-1);
 }

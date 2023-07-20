@@ -6,113 +6,97 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/16 20:25:42 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/20 13:01:36 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/20 17:23:57 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-static void	*philo_loop(void *data);
-static void	*time_loop(void *data);
+t_uint64	get_nbr_philo_intern(t_uint64 set_val);
+t_uint64	get_die_time_intern(t_uint64 set_val);
+t_uint64	get_eat_time_intern(t_uint64 set_val);
+t_uint64	get_sleep_time_intern(t_uint64 set_val);
+t_uint64	get_must_eat_intern(t_uint64 set_val);
 
-int	setup(int argc, char const *argv[], t_settings *settings)
+int	init_settings(int argc, char const *argv[])
 {
+	t_uint64	nbr_philo;
+	t_uint64	die_time;
+	t_uint64	eat_time;
+	t_uint64	sleep_time;
+	t_uint64	must_eat;
+
 	if (argc < 5 || argc > 6)
 		return (-1);
-	if (atoi_fill(argv[1], &settings->nbr_philo) != 0)
+	if (atoi_fill(argv[1], &nbr_philo) != 0)
 		return (-1);
-	if (atoi_fill(argv[2], &settings->time_die) != 0)
+	if (atoi_fill(argv[2], &die_time) != 0)
 		return (-1);
-	if (atoi_fill(argv[3], &settings->time_eat) != 0)
+	if (atoi_fill(argv[3], &eat_time) != 0)
 		return (-1);
-	if (atoi_fill(argv[4], &settings->time_sleep) != 0)
+	if (atoi_fill(argv[4], &sleep_time) != 0)
 		return (-1);
-	settings->nbr_eat = 0;
-	if (argc == 6 && atoi_fill(argv[5], &settings->nbr_eat) != 0)
+	if (argc == 6 && atoi_fill(argv[5], &must_eat) != 0)
 		return (-1);
-	settings->srt_time = get_time();
+	get_nbr_philo_intern(nbr_philo);
+	get_die_time_intern(die_time);
+	get_eat_time_intern(eat_time);
+	get_sleep_time_intern(sleep_time);
+	get_must_eat_intern(must_eat);
 	return (0);
 }
 
-void	create_philo(t_philo *philo, t_settings settings,
-			t_pthread_mutex *fork1, t_pthread_mutex *fork2)
+t_philosopher	*create_philos(void)
 {
-	static t_uint64	id = 1;
+	t_philosopher	*philos;
+	t_uint64		i;
 
-	philo->settings = settings;
-	philo->id = id++;
-	philo->fork1 = fork1;
-	philo->fork2 = fork2;
-	philo->last_eat = settings.srt_time;
-	philo->eat_count = 0;
-	pthread_create(&philo->thread, NUL, &philo_loop, philo);
-	usleep(100);
-}
-
-void	start_simulation(t_pthread *time_thread, t_philo *philos,
-			t_settings settings)
-{
-	void	*loop_datas[2];
-
-	loop_datas[0] = (void *)philos;
-	loop_datas[1] = (void *)&settings;
-	pthread_create(time_thread, NUL, &time_loop, (void *)loop_datas);
-	pthread_join(*time_thread, NUL);
-}
-
-static void	*philo_loop(void *data)
-{
-	t_philo	*philo;
-
-	philo = (t_philo *)data;
-	while (1)
+	if (get_forks() == NUL)
+		return (NUL);
+	philos = malloc(sizeof(t_philosopher) * get_nbr_philo());
+	if (philos == NUL)
+		return (delete_forks());
+	philos[0].forks[0] = get_forks() + (get_nbr_philo() - 1);
+	i = 0;
+	while (i < get_nbr_philo())
 	{
-		pthread_mutex_lock(philo->fork1);
-		printf("%lu %lu has taken a fork\n",
-			ms_since(philo->settings.srt_time), philo->id);
-		pthread_mutex_lock(philo->fork2);
-		printf("%lu %lu has taken a fork\n",
-			ms_since(philo->settings.srt_time), philo->id);
-		printf("%lu %lu is eating\n", ms_since(philo->settings.srt_time),
-			philo->id);
-		philo->last_eat = get_time();
-		usleep(philo->settings.time_eat * 1000);
-		philo->eat_count += 1;
-		pthread_mutex_unlock(philo->fork1);
-		pthread_mutex_unlock(philo->fork2);
-		printf("%lu %lu is sleeping\n", ms_since(philo->settings.srt_time),
-			philo->id);
-		usleep(philo->settings.time_sleep * 1000);
-		printf("%lu %lu is thinking\n", ms_since(philo->settings.srt_time),
-			philo->id);
+		usleep(100);
+		if (i != 0)
+			philos[i].forks[0] = get_forks() + (i - 1);
+		philos[i] = (t_philosopher){.id = i + 1, .forks[0] = philos[i].forks[0],
+			.forks[1] = get_forks() + i};
+		if (pthread_create(&philos[i].thread, NUL, &philospher_routine,
+				philos + i) != 0)
+			return (delete_philos(philos, i + 1));
+		i += 2;
+		if (i % 2 == 0 && i >= get_nbr_philo())
+			i = 1;
 	}
-	return (NUL);
+	return (philos);
 }
 
-static void	*time_loop(void *data)
+int	run_simulation(t_philosopher *philos)
 {
-	t_philo		*philos;
-	t_settings	set;
+	t_pthread	thread;
+
+	if (pthread_create(&thread, NUL, &time_routine, (void *)philos) != 0)
+		return (1);
+	if (pthread_join(thread, NUL) != 0)
+		return (2);
+	return (0);
+}
+
+void	*delete_philos(t_philosopher *philos, t_uint64 count)
+{
 	t_uint64	i;
 
-	philos = (t_philo *)((void **)data)[0];
-	set = *((t_settings *)((void **)data)[1]);
-	while (1)
+	delete_forks();
+	i = 0;
+	while (i < count)
 	{
-		i = 0;
-		while (i < set.nbr_philo)
-		{
-			if (ms_since(philos[i].last_eat) >= set.time_die)
-				return ((void *)(t_uint64)printf("%lu %lu died\n",
-					ms_since(set.srt_time), philos[i].id));
-			i++;
-		}
-		i = 0;
-		while ((set.nbr_eat > 0) && (i < set.nbr_philo)
-			&& (philos[i].eat_count >= set.nbr_eat))
-			i++;
-		if (i == set.nbr_philo)
-			return (NUL);
+		pthread_detach(philos[i].thread);
+		i++;
 	}
+	free(philos);
 	return (NUL);
 }

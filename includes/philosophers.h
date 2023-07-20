@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 15:42:22 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/19 21:23:17 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/20 17:30:08 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,46 +15,50 @@
 
 # include "external_functions.h"
 
-typedef unsigned long	t_uint64;
+typedef unsigned long			t_uint64;
 
-typedef struct s_timestamp
+typedef struct s_timestamp		t_timestamp;
+typedef struct s_philosopher	t_philosopher;
+
+typedef t_pthread_mutex			t_fork;
+
+struct s_timestamp
 {
 	t_uint64	sec;
 	t_uint64	usec;
+};
 
-}	t_timestamp;
-
-typedef struct settings
+struct s_philosopher
 {
-	t_uint64	nbr_philo;
-	t_uint64	time_die;
-	t_uint64	time_eat;
-	t_uint64	time_sleep;
-	t_uint64	nbr_eat;
-	t_timestamp	srt_time;
+	t_pthread	thread;
+	t_uint64	id;
+	t_fork		*forks[2];
+	t_time		last_eat;
+	t_uint64	eat_count;
+};
 
-}	t_settings;
+int				init_time(void);
+t_time			get_time(void);
+t_time			time_since(t_time prev_time);
+t_uint64		get_time_ms(void);
 
-typedef struct s_philo
-{
-	t_pthread		thread;
-	t_settings		settings;
-	t_uint64		id;
-	t_pthread_mutex	*fork1;
-	t_pthread_mutex	*fork2;
-	t_timestamp		last_eat;
-	t_uint64		eat_count;
+t_uint64		get_nbr_philo(void);
+t_uint64		get_die_time(void);
+t_uint64		get_eat_time(void);
+t_uint64		get_sleep_time(void);
+t_uint64		get_must_eat(void);
 
-}	t_philo;
+int				atoi_fill(char const *str, t_uint64 *nbr);
 
-int			setup(int argc, char const *argv[], t_settings *settings);
-void		create_philo(t_philo *philo, t_settings settings,
-				t_pthread_mutex *fork1, t_pthread_mutex *fork2);
-void		start_simulation(t_pthread *time_thread, t_philo *philos,
-				t_settings settings);
+t_fork			*get_forks(void);
+void			*delete_forks(void);
 
-t_timestamp	get_time(void);
-t_uint64	ms_since(t_timestamp timestamp);
-int			atoi_fill(char const *str, t_uint64 *nbr);
+int				init_settings(int argc, char const *argv[]);
+t_philosopher	*create_philos(void);
+int				run_simulation(t_philosopher *philos);
+void			*delete_philos(t_philosopher *philos, t_uint64 count);
+
+void			*philospher_routine(void *data);
+void			*time_routine(void *data);
 
 #endif // PHILOSOPHERS_H
