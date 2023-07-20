@@ -4,7 +4,8 @@
 	],
 	"files.exclude": {
 		"philo": true,
-		"philo_debug": true
+		"philo_debug": true,
+		"errors_log": true
 	},
 	"files.associations": {
 		"*.h": "c",
