@@ -3,3 +3,4 @@
 *.o
 philo/philo
 philo/.start.sh
+.start.sh
