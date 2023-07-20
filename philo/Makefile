@@ -6,14 +6,14 @@
 #    By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/14 15:55:42 by tchoquet          #+#    #+#              #
-#    Updated: 2023/07/20 12:28:23 by tchoquet         ###   ########.fr        #
+#    Updated: 2023/07/20 12:38:51 by tchoquet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 ROOT			= .
-SRCS_DIR		= ${ROOT}/philo/sources
-INCLUDES_DIR 	= ${ROOT}/philo/includes
-BUILD_DIR		= ${ROOT}/philo/.build
+SRCS_DIR		= ${ROOT}/sources
+INCLUDES_DIR 	= ${ROOT}/includes
+BUILD_DIR		= ${ROOT}/.build
 
 SRC			= ${wildcard ${SRCS_DIR}/*.c}
 OBJ			= ${patsubst ${SRCS_DIR}%, ${BUILD_DIR}%, ${SRC:.c=.o}}
