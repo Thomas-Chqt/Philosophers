@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/16 20:25:42 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/20 12:25:11 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/20 13:01:36 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,14 +103,12 @@ static void	*time_loop(void *data)
 		while (i < set.nbr_philo)
 		{
 			if (ms_since(philos[i].last_eat) >= set.time_die)
-			{
-				printf("%lu %lu died\n", ms_since(set.srt_time), philos[i].id);
-				return (NUL);
-			}
+				return ((void *)(t_uint64)printf("%lu %lu died\n",
+					ms_since(set.srt_time), philos[i].id));
 			i++;
 		}
 		i = 0;
-		while ((i < set.nbr_philo || set.nbr_eat > 0)
+		while ((set.nbr_eat > 0) && (i < set.nbr_philo)
 			&& (philos[i].eat_count >= set.nbr_eat))
 			i++;
 		if (i == set.nbr_philo)
