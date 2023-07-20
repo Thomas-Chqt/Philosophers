@@ -1,5 +1,5 @@
+.DS_Store
 *.a
 *.o
-philo
-philo_debug
-.start.sh
+philo/philo
+philo/.start.sh

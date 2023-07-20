@@ -1,10 +1,9 @@
 {
 	"C_Cpp.default.includePath": [
-		"includes"
+		"philo/includes"
 	],
 	"files.exclude": {
-		"philo": true,
-		"philo_debug": true
+		"philo/philo": true
 	},
 	"files.associations": {
 		"*.h": "c",
