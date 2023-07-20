@@ -3,7 +3,8 @@
 		"philo/includes"
 	],
 	"files.exclude": {
-		"philo/philo": true
+		"philo/philo": true,
+		"errors_log": true
 	},
 	"files.associations": {
 		"*.h": "c",
