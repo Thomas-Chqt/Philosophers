@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 21:55:00 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/20 16:48:27 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/21 17:24:20 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 typedef unsigned long						t_size;
 typedef long								t_ssize;
 typedef unsigned int						t_useconds;
-typedef long								t_time;
+typedef long								t_tv_time;
 typedef int									t_suseconds;
 typedef struct _opaque_pthread_t			*t_pthread;
 typedef struct _opaque_pthread_attr_t		t_pthread_attr;
@@ -29,7 +29,7 @@ typedef struct _opaque_pthread_mutexattr_t	t_pthread_mutexattr;
 
 struct s_timeval
 {
-	t_time		tv_sec;
+	t_tv_time	tv_sec;
 	t_suseconds	tv_usec;
 };
 

@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 15:41:57 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/20 17:16:11 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/21 17:24:29 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,20 +39,14 @@ int	main(int argc, char const *argv[])
 	t_philosopher	*philosophers;
 
 	if (init_settings(argc, argv) != 0)
-	{
-		printf("Arguments Error\n");
-		return (1);
-	}
+		return (printf("Arguments Error\n"));
+	if (init_time() != 0)
+		return (printf("Unkown Error\n"));
 	philosophers = create_philos();
-	if (philosophers == NUL || run_simulation(philosophers) != 0)
-		printf("Unkown Error\n");
-	if (philosophers != NUL)
-	{
-		delete_philos(philosophers, get_nbr_philo());
-		return (3);
-	}
-	else
-		return (2);
-	delete_philos(philosophers, get_nbr_philo());
+	if (philosophers == NUL)
+		return (printf("Unkown Error\n"));
+	if (run_simulation(philosophers) != 0)
+		return (printf("Unkown Error\n"));
+	delete_philos(philosophers, get_setting(e_nbr_philo));
 	return (0);
 }
