@@ -9,7 +9,7 @@
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/philo_debug",
-			"args": ["4", "310", "200", "100"],
+			"args": ["4", "410", "200", "200"],
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}",
 			"externalConsole": false,

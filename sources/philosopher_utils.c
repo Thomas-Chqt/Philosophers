@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/21 16:06:41 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/21 17:27:36 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/22 18:40:41 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	eat(t_philosopher *philo)
 	eat_time = get_time();
 	printf("%lu %lu is eating\n", (t_uint64)eat_time, philo->id);
 	philo->last_eat = (t_uint64)eat_time;
-	usleep(get_setting(e_eat_time) * 1000);
+	usleep((t_uint64)get_gdata().eat_time * 1000);
 	philo->eat_count += 1;
 	return (0);
 }
@@ -40,7 +40,7 @@ int	drop_fork(t_fork *fork)
 int	philo_sleep(t_philosopher *philo)
 {
 	printf("%lu %lu is sleeping\n", (t_uint64)get_time(), philo->id);
-	usleep(get_setting(e_sleep_time) * 1000);
+	usleep((t_uint64)get_gdata().sleep_time * 1000);
 	return (0);
 }
 

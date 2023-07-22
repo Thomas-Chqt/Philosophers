@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 15:42:22 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/21 17:26:50 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/22 19:18:27 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,10 @@
 typedef unsigned long			t_uint64;
 typedef unsigned long			t_time;
 
-typedef struct s_timestamp		t_timestamp;
-typedef struct s_philosopher	t_philosopher;
-typedef enum e_setting			t_setting;
-
 typedef t_pthread_mutex			t_fork;
 
-struct s_timestamp
-{
-	t_uint64	sec;
-	t_uint64	usec;
-};
+typedef struct s_philosopher	t_philosopher;
+typedef struct s_global_data	t_global_data;
 
 struct s_philosopher
 {
@@ -39,30 +32,29 @@ struct s_philosopher
 	t_uint64	eat_count;
 };
 
-enum e_setting
+struct s_global_data
 {
-	e_nbr_philo = 0,
-	e_die_time = 1,
-	e_eat_time = 2,
-	e_sleep_time = 3,
-	e_must_eat = 4
+	t_uint64	nbr_philo;
+	t_time		die_time;
+	t_time		eat_time;
+	t_time		sleep_time;
+	t_uint64	must_eat;
 };
 
 int				init_time(void);
 t_time			get_time(void);
 t_time			time_since(t_time prev_time);
 
-int				init_settings(int argc, char const *argv[]);
-t_uint64		get_setting(t_setting setting);
+int				init_global_data(int argc, char const *argv[]);
+t_global_data	get_gdata(void);
 
-int				init_forks(void);
-t_fork			*get_forks(void);
-void			*delete_forks(void);
+t_fork			*create_forks(void);
+void			*delete_forks(t_fork *forks, t_uint64 count);
 
-t_philosopher	*create_philos(void);
+t_philosopher	*create_philos(t_fork *forks);
 void			*delete_philos(t_philosopher *philos, t_uint64 count);
 
-int				run_simulation(t_philosopher *philos);
+int				run_philos(t_philosopher *philos);
 
 int				take_fork(t_philosopher *philo, t_fork *fork);
 int				eat(t_philosopher *philo);

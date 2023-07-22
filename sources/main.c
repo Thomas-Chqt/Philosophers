@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 15:41:57 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/21 17:24:29 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/22 19:23:35 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,17 +36,30 @@ static void	destructor(void)
 
 int	main(int argc, char const *argv[])
 {
+	int				return_code;
+	t_fork			*forks;
 	t_philosopher	*philosophers;
 
-	if (init_settings(argc, argv) != 0)
+	return_code = 0;
+	
+	if (init_global_data(argc, argv) != 0)
 		return (printf("Arguments Error\n"));
+
 	if (init_time() != 0)
 		return (printf("Unkown Error\n"));
-	philosophers = create_philos();
+
+	forks = create_forks();
+	if (forks == NUL)
+		return (printf("Unkown Error\n"));
+
+	philosophers = create_philos(forks);
 	if (philosophers == NUL)
-		return (printf("Unkown Error\n"));
-	if (run_simulation(philosophers) != 0)
-		return (printf("Unkown Error\n"));
-	delete_philos(philosophers, get_setting(e_nbr_philo));
+		return_code = printf("Unkown Error\n");
+
+	else if (run_philos(philosophers) != 0)
+		return_code = printf("Unkown Error\n");
+
+	delete_philos(philosophers, get_gdata().nbr_philo);
+	delete_forks(forks, get_gdata().nbr_philo);
 	return (0);
 }
