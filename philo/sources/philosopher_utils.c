@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/21 16:06:41 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/23 14:19:11 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/23 16:39:15 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,8 @@ int	eat(t_philosopher *philo)
 	}
 	eat_time = philo->last_print;
 	printf("%lu %lu is eating\n", (t_uint64)eat_time, philo->id);
-	pthread_mutex_unlock(get_gdata().global_mutex);
 	philo->last_eat = (t_uint64)eat_time;
+	pthread_mutex_unlock(get_gdata().global_mutex);
 	usleep((t_uint64)get_gdata().eat_time * 1000);
 	pthread_mutex_lock(get_gdata().global_mutex);
 	if (philo->eat_left > 0)
