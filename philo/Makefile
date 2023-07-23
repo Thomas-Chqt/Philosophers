@@ -17,32 +17,28 @@ BUILD_DIR		= ${ROOT}/.build
 
 SRC			= ${wildcard ${SRCS_DIR}/*.c}
 OBJ			= ${patsubst ${SRCS_DIR}%, ${BUILD_DIR}%, ${SRC:.c=.o}}
-OBJ_DEBUG	= ${patsubst ${SRCS_DIR}%, ${BUILD_DIR}%, ${SRC:.c=_debug.o}}
 
-EXTERNAL_LIBS = -l ft -l memory_leak_detector
+memcheck: EXTERNAL_LIBS = -l ft -l memory_leak_detector
 
-CC				= gcc
-CFLAGS			= -Wall -Wextra -Werror
-debug: CFLAGS	= -g -D MEMCHECK
+CC					 = gcc
+CFLAGS				 = -Wall -Wextra -Werror
+memcheck: CFLAGS	+= -D MEMCHECK
 
 NAME		= ${ROOT}/philo
-NAME_DEBUG	= ${ROOT}/philo_debug
-
-vpath %.c ${ROOT} ${SRCS_DIR}
 
 
-.PHONY: all clean fclean re debug cleandebug fcleandebug redebug norm cleanbuild
+.PHONY: all clean fclean re memcheck
 
 
-all: ${NAME}
+memcheck all: ${NAME}
 
 ${NAME}: ${OBJ}
-	@${CC} -o $@ $^
+	@${CC} -o $@ $^ ${EXTERNAL_LIBS}
 	@echo "Executable created at: $@"
 
 clean:
-	@rm -rf ${OBJ}
-	@echo "Release object files deleted."
+	@rm -rf ${BUILD_DIR}
+	@echo "${BUILD_DIR} deleted."
 
 fclean: clean
 	@rm -rf ${NAME}
@@ -52,37 +48,7 @@ re: fclean all
 
 
 
-
-debug: ${NAME_DEBUG}
-
-${NAME_DEBUG}: ${OBJ_DEBUG}
-	@${CC} -o $@ $^ ${EXTERNAL_LIBS}
-	@echo "Executable created at: $@"
-
-cleandebug:
-	@rm -rf ${OBJ_DEBUG}
-	@echo "Debug object in ${BUILD_DIR} files deleted."
-
-fcleandebug: cleandebug
-	@rm -rf ${NAME_DEBUG}
-	@echo "${NAME_DEBUG} deleted."
-
-redebug: fcleandebug debug
-
-
-
-
-norm:
-	@norminette ${SRCS_DIR} ${INCLUDES_DIR}
-
-
-cleanbuild:
-	@rm -rf ${BUILD_DIR}
-	@echo "Build folder deleted."
-
-
-
-${BUILD_DIR}/%_debug.o ${BUILD_DIR}/%.o: ${SRCS_DIR}/%.c | ${BUILD_DIR}
+${BUILD_DIR}/%.o: ${SRCS_DIR}/%.c | ${BUILD_DIR}
 	${CC} ${CFLAGS} -o $@ -c $< -I${INCLUDES_DIR}
 
 
