@@ -1,8 +1,6 @@
 .DS_Store
 *.a
 *.o
-philo
-philo_debug
 .start.sh
 errors_log
 .LazyPhilosophersTester/*
