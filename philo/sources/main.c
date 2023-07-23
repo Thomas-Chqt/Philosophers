@@ -6,45 +6,54 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 15:41:57 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/19 16:32:39 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/23 14:42:32 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	free_return(void *ptr1, void *ptr2, char const *msg);
+#ifdef MEMCHECK
+
+__attribute__((destructor))
+static void	destructor(void)
+{
+	char	*pid;
+	char	*cmd;
+
+	print_report();
+	pid = ft_itoa(getpid());
+	cmd = ft_strjoin("leaks -q ", pid);
+	ft_printf("\n \n");
+	system((const char *)cmd);
+	free(pid);
+	free(cmd);
+}
+
+#endif // MEMCHECK
 
 int	main(int argc, char const *argv[])
 {
-	t_settings		settings;
-	t_pthread		time_thread;
-	t_pthread_mutex	*forks;
-	t_philo			*philos;
-	t_uint64		i;
+	int				return_code;
+	t_fork			*forks;
+	t_philosopher	*philosophers;
 
-	if (setup(argc, argv, &settings) != 0)
-		return (free_return(NUL, NUL, "Arg error\n"));
-	forks = malloc(sizeof(t_pthread_mutex) * settings.nbr_philo);
-	philos = malloc(sizeof(t_philo) * settings.nbr_philo);
-	if (forks == NUL || philos == NUL)
-		return (free_return(forks, philos, "Malloc error\n"));
-	i = 0;
-	while (i < settings.nbr_philo)
-		pthread_mutex_init(forks + (i++), NUL);
-	create_philo(philos, settings, forks + (settings.nbr_philo - 1), forks);
-	i = 0;
-	while (++i < settings.nbr_philo)
-		create_philo(philos + i, settings, forks + (i - 1), forks + i);
-	start_simulation(&time_thread, philos, settings);
-	free(philos);
-	free(forks);
-	return (0);
-}
-
-int	free_return(void *ptr1, void *ptr2, char const *msg)
-{
-	free(ptr1);
-	free(ptr2);
-	printf("%s", msg);
-	return (-1);
+	return_code = 1;
+	if (init_global_data(argc, argv) != 0)
+		return (printf("Arguments Error\n"));
+	if (init_time() == 0)
+	{
+		forks = create_forks();
+		philosophers = create_philos(forks);
+		if (philosophers != NUL)
+		{
+			if (run_philos(philosophers) == 0)
+				return_code = 0;
+			delete_philos(philosophers);
+			delete_forks(forks, get_gdata().nbr_philo);
+		}
+	}
+	clean_gdata();
+	if (return_code != 0)
+		printf("Unkown Error\n");
+	return (return_code);
 }

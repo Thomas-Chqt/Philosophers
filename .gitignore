@@ -9,3 +9,7 @@ errors_log
 logs
 philo
 philo_debug
+.start.sh
+errors_log
+.LazyPhilosophersTester/*
+logs
