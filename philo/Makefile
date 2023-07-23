@@ -30,7 +30,7 @@ NAME		= ${ROOT}/philo
 .PHONY: all clean fclean re memcheck
 
 
-memcheck all: ${NAME}
+all memcheck: ${NAME}
 
 ${NAME}: ${OBJ}
 	@${CC} -o $@ $^ ${EXTERNAL_LIBS}
