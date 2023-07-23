@@ -1,15 +1,11 @@
 .DS_Store
 *.a
 *.o
-philo/philo
-philo/.start.sh
-.start.sh
-errors_log
-.LazyPhilosophersTester/*
-logs
 philo
 philo_debug
 .start.sh
 errors_log
 .LazyPhilosophersTester/*
 logs
+philo/philo
+philo/.start.sh
