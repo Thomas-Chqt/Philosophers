@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 15:42:22 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/23 01:39:38 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/23 14:42:11 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 # include "external_functions.h"
 
 # ifdef MEMCHECK
+
+#  include <memory_leak_detector.h>
 
 char			*ft_strjoin(char const *s1, char const *s2);
 char			*ft_itoa(int n);
@@ -44,11 +46,13 @@ struct s_philosopher
 	t_fork		*forks[2];
 	t_time		last_eat;
 	t_uint64	eat_left;
+	t_time		last_print;
 };
 
 struct s_global_data
 {
 	t_pthread_mutex	*global_mutex;
+	t_bool			is_thread_created;
 	t_uint64		nbr_philo;
 	t_time			die_time;
 	t_time			eat_time;
@@ -64,7 +68,8 @@ t_time			time_since(t_time prev_time);
 
 int				init_global_data(int argc, char const *argv[]);
 t_global_data	get_gdata(void);
-void			need_eat_left_minus_one(void);
+// void			need_eat_left_minus_one(void);
+void			set_need_eat_left(t_uint64 val);
 void			clean_gdata(void);
 
 t_fork			*create_forks(void);

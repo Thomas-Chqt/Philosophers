@@ -6,7 +6,7 @@
 #    By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/14 15:55:42 by tchoquet          #+#    #+#              #
-#    Updated: 2023/07/20 16:52:58 by tchoquet         ###   ########.fr        #
+#    Updated: 2023/07/23 14:44:51 by tchoquet         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ SRC			= ${wildcard ${SRCS_DIR}/*.c}
 OBJ			= ${patsubst ${SRCS_DIR}%, ${BUILD_DIR}%, ${SRC:.c=.o}}
 OBJ_DEBUG	= ${patsubst ${SRCS_DIR}%, ${BUILD_DIR}%, ${SRC:.c=_debug.o}}
 
-EXTERNAL_LIBS = -l ft
+EXTERNAL_LIBS = -l ft -l memory_leak_detector
 
 CC				= gcc
 CFLAGS			= -Wall -Wextra -Werror
