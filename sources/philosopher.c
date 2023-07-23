@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/16 20:25:42 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/22 19:23:03 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/23 01:44:45 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,33 +25,18 @@ t_philosopher	*create_philos(t_fork *forks)
 	i = 0;
 	while (i < get_gdata().nbr_philo)
 	{
-		if (create_philo(philos + i, i + 1) != 0)
-			return (delete_philos(philos, i + 1));
+		philos[i].is_thread_created = false;
 		philos[i].id = i + 1;
-		if (i = 0)
+		if (i == 0)
 			philos[i].forks[0] = forks + (get_gdata().nbr_philo - 1);
 		else
 			philos[i].forks[0] = forks + (i - 1);
 		philos[i].forks[1] = forks + i;
 		philos[i].last_eat = (t_time)0;
-		philos[i].eat_count = 0;
+		philos[i].eat_left = get_gdata().must_eat;
 		i++;
 	}
 	return (philos);
-}
-
-void	*delete_philos(t_philosopher *philos, t_uint64 count)
-{
-	t_uint64	i;
-
-	i = 0;
-	while (i < count)
-	{
-		pthread_detach(philos[i].thread);
-		i++;
-	}
-	free(philos);
-	return (NUL);
 }
 
 int	run_philos(t_philosopher *philos)
@@ -63,8 +48,30 @@ int	run_philos(t_philosopher *philos)
 	{
 		if (pthread_create(&philos->thread, NUL, &philospher_routine, (void *)(philos + i)) != 0)
 			return (1);
+		philos[i].is_thread_created = true;
+		i++;
 	}
-	
+	return (0);
+}
+
+int	delete_philos(t_philosopher *philos)
+{
+	t_uint64	i;
+	int			ret_val;
+
+	ret_val = 0;
+	i = 0;
+	while (i < get_gdata().nbr_philo)
+	{
+		if (philos[i].is_thread_created == true)
+		{
+			if (pthread_join(philos[i].thread, NUL) != 0)
+				ret_val = 1;
+		}
+		i++;
+	}
+	free(philos);
+	return (ret_val);
 }
 
 static void	*philospher_routine(void *data)
