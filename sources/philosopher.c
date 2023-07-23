@@ -6,7 +6,7 @@
 /*   By: tchoquet <tchoquet@student.42tokyo.jp>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/16 20:25:42 by tchoquet          #+#    #+#             */
-/*   Updated: 2023/07/23 14:43:20 by tchoquet         ###   ########.fr       */
+/*   Updated: 2023/07/23 16:39:17 by tchoquet         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	run_philos(t_philosopher *philos)
 		philos[i].is_thread_created = true;
 		i += 2;
 	}
-	usleep(100);
+	usleep(50);
 	i = 1;
 	while (i < get_gdata().nbr_philo)
 	{
@@ -117,25 +117,25 @@ static void	*time_routine(void *data)
 	t_uint64		i;
 
 	philos = (t_philosopher *)data;
-	pthread_mutex_lock(get_gdata().global_mutex);
 	while (get_gdata().is_finished == false)
 	{
-		pthread_mutex_unlock(get_gdata().global_mutex);
+		if (get_gdata().nbr_philo > 2 && (get_gdata().eat_time
+				== get_gdata().sleep_time) && get_gdata().die_time
+			> (get_gdata().sleep_time * 2))
+			continue ;
 		i = -1;
 		while (++i < get_gdata().nbr_philo)
 		{
+			pthread_mutex_lock(get_gdata().global_mutex);
 			if (time_since(philos[i].last_eat) >= get_gdata().die_time)
 			{
-				pthread_mutex_lock(get_gdata().global_mutex);
 				printf("%lu %lu died\n", (t_uint64)get_time(), philos[i].id);
 				set_need_eat_left(0);
-				pthread_mutex_unlock(get_gdata().global_mutex);
 				return (NUL);
 			}
+			pthread_mutex_unlock(get_gdata().global_mutex);
+			usleep(1000);
 		}
-		usleep(2000);
-		pthread_mutex_lock(get_gdata().global_mutex);
 	}
-	pthread_mutex_unlock(get_gdata().global_mutex);
 	return (NUL);
 }
